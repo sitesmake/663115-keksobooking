@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Александр Грищенко](https://up.htmlacademy.ru/javascript/13/user/663115).
-* Наставник: `Неизвестно`.
+* Наставник: [Вениамин Тамбурин](https://htmlacademy.ru/profile/id552259).
 
 ---
 
