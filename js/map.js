@@ -16,7 +16,7 @@ var OFFER_TYPES = {
 };
 
 var typesMapper = function (key) {
-  if (key in OFFER_TYPES) {
+  if (OFFER_TYPES.hasOwnProperty(key)) {
     return OFFER_TYPES[key];
   } else {
     return key;
