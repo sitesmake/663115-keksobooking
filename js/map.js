@@ -9,6 +9,19 @@ var PRICE_MIN = 1000;
 var PRICE_MAX = 1000000;
 var ROOMS_MIN = 1;
 var ROOMS_MAX = 5;
+var OFFER_TYPES = {
+  flat: 'Квартира',
+  bungalo: 'Бунгало',
+  house: 'Дом'
+};
+
+var typesMapper = function (key) {
+  if (key in OFFER_TYPES) {
+    return OFFER_TYPES[key];
+  } else {
+    return key;
+  }
+};
 
 var randomItem = function (items) {
   return items[Math.floor(Math.random() * items.length)];
@@ -72,12 +85,6 @@ var mockDescription = function () {
 
 var mockPhotos = function () {
   return randomSortArray(['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']);
-};
-
-var typesMapper = {
-  flat: 'Квартира',
-  bungalo: 'Бунгало',
-  house: 'Дом'
 };
 
 var avatarsHelperArray = [];
@@ -174,7 +181,7 @@ var makeOffer = function (offerObject) {
   offerNode.querySelector('.popup__title').textContent = offerObject.offer.title;
   offerNode.querySelector('.popup__text--address').textContent = offerObject.offer.address;
   offerNode.querySelector('.popup__text--price').textContent = offerObject.offer.price + ' ₽/ночь';
-  offerNode.querySelector('.popup__type').textContent = typesMapper[offerObject.offer.type];
+  offerNode.querySelector('.popup__type').textContent = typesMapper(offerObject.offer.type);
   offerNode.querySelector('.popup__text--capacity').textContent = offerObject.offer.rooms + ' комнаты для ' + offerObject.offer.guests + ' гостей';
   offerNode.querySelector('.popup__text--time').textContent = 'Заезд после ' + offerObject.offer.checkin + ', выезд до ' + offerObject.offer.checkout;
   offerNode.querySelector('.popup__description').textContent = offerObject.offer.description;
