@@ -18,9 +18,10 @@ var randomNumber = function (min, max) {
   return min + Math.round(Math.random() * (max - min));
 };
 
-var mockAvatar = function () {
-  var x = randomNumber(1, PROPERTIES_SIZE);
-  return 'img/avatars/user0' + x + '.png';
+var randomSortArray = function (ary) {
+  return ary.sort(function () {
+    return 0.5 - Math.random();
+  });
 };
 
 var mockTitle = function () {
@@ -56,9 +57,7 @@ var mockCheckout = function () {
 };
 
 var mockFeatures = function () {
-  var featuresData = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'].sort(function () {
-    return 0.5 - Math.random();
-  });
+  var featuresData = randomSortArray(['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner']);
   var featuresSize = randomNumber(1, featuresData.length);
   var features = [];
   for (var i = 0; i < featuresSize; i++) {
@@ -72,27 +71,30 @@ var mockDescription = function () {
 };
 
 var mockPhotos = function () {
-  return ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']
-      .sort(function () {
-        return 0.5 - Math.random();
-      });
+  return randomSortArray(['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']);
 };
 
-var convertType = function (type) {
-  switch (type) {
-    case 'flat':
-      return 'Квартира';
-    case 'bungalo':
-      return 'Бунгало';
-    case 'house':
-      return 'Дом';
-    default:
-      return 'Тип жилья не распознан';
-  }
+var typesMapper = {
+  flat: 'Квартира',
+  bungalo: 'Бунгало',
+  house: 'Дом'
 };
+
+var avatarsHelperArray = [];
+for (var i = 1; i <= PROPERTIES_SIZE; i++) {
+  avatarsHelperArray.push(i);
+}
+avatarsHelperArray = randomSortArray(avatarsHelperArray);
+
+var mockAvatar = function () {
+  var x = avatarsHelperArray.pop();
+  return 'img/avatars/user0' + x + '.png';
+};
+
 
 var properties = [];
-for (var i = 0; i < PROPERTIES_SIZE; i++) {
+
+for (i = 0; i < PROPERTIES_SIZE; i++) {
   var locationX = randomNumber(X_MIN, X_MAX);
   var locationY = randomNumber(Y_MIN, Y_MAX);
   properties.push({
@@ -128,10 +130,11 @@ var offerTemplate = template.content.querySelector('article');
 
 var makePin = function (pinObject) {
   var pinNode = pinTemplate.cloneNode(true);
-  pinNode.style.left = pinObject.location.x - pinNode.querySelector('img').width / 2 + 'px';
-  pinNode.style.top = pinObject.location.y - pinNode.querySelector('img').height + 'px';
-  pinNode.querySelector('img').src = pinObject.author.avatar;
-  pinNode.querySelector('img').alt = pinObject.offer.title;
+  var img = pinNode.querySelector('img');
+  pinNode.style.left = pinObject.location.x - img.width / 2 + 'px';
+  pinNode.style.top = pinObject.location.y - img.height + 'px';
+  img.src = pinObject.author.avatar;
+  img.alt = pinObject.offer.title;
   return pinNode;
 };
 
@@ -141,27 +144,19 @@ for (i = 0; i < PROPERTIES_SIZE; i++) {
 }
 document.querySelector('.map__pins').appendChild(fragment);
 
-var insertFeatures = function (templateNode, parentNodeSelector, data) {
+var generateFeaturesList = function (data) {
   var featuresFragment = document.createDocumentFragment();
-  var parentFeaturesNode = templateNode.querySelector(parentNodeSelector);
-  while (parentFeaturesNode.firstChild) {
-    parentFeaturesNode.removeChild(parentFeaturesNode.firstChild);
-  }
   for (i = 0; i < data.length; i++) {
     var featureItem = document.createElement('li');
     featureItem.classList.add('popup__feature');
     featureItem.classList.add('popup__feature--' + data[i]);
     featuresFragment.appendChild(featureItem);
   }
-  parentFeaturesNode.appendChild(featuresFragment);
+  return featuresFragment;
 };
 
-var insertPhotos = function (templateNode, parentNodeSelector, data) {
+var generatePhotosList = function (data) {
   var photosFragment = document.createDocumentFragment();
-  var parentPhotosNode = templateNode.querySelector(parentNodeSelector);
-  while (parentPhotosNode.firstChild) {
-    parentPhotosNode.removeChild(parentPhotosNode.firstChild);
-  }
   for (i = 0; i < data.length; i++) {
     var photoItem = document.createElement('img');
     photoItem.classList.add('popup__photo');
@@ -171,7 +166,7 @@ var insertPhotos = function (templateNode, parentNodeSelector, data) {
     photoItem.style.height = '40px';
     photosFragment.appendChild(photoItem);
   }
-  parentPhotosNode.appendChild(photosFragment);
+  return photosFragment;
 };
 
 var makeOffer = function (offerObject) {
@@ -179,13 +174,15 @@ var makeOffer = function (offerObject) {
   offerNode.querySelector('.popup__title').textContent = offerObject.offer.title;
   offerNode.querySelector('.popup__text--address').textContent = offerObject.offer.address;
   offerNode.querySelector('.popup__text--price').textContent = offerObject.offer.price + ' ₽/ночь';
-  offerNode.querySelector('.popup__type').textContent = convertType(offerObject.offer.type);
+  offerNode.querySelector('.popup__type').textContent = typesMapper[offerObject.offer.type];
   offerNode.querySelector('.popup__text--capacity').textContent = offerObject.offer.rooms + ' комнаты для ' + offerObject.offer.guests + ' гостей';
   offerNode.querySelector('.popup__text--time').textContent = 'Заезд после ' + offerObject.offer.checkin + ', выезд до ' + offerObject.offer.checkout;
   offerNode.querySelector('.popup__description').textContent = offerObject.offer.description;
   offerNode.querySelector('.popup__avatar').src = offerObject.author.avatar;
-  insertFeatures(offerNode, '.popup__features', offerObject.offer.features);
-  insertPhotos(offerNode, '.popup__photos', offerObject.offer.photos);
+  offerNode.querySelector('.popup__features').innerHTML = '';
+  offerNode.querySelector('.popup__features').appendChild(generateFeaturesList(offerObject.offer.features));
+  offerNode.querySelector('.popup__photos').innerHTML = '';
+  offerNode.querySelector('.popup__photos').appendChild(generatePhotosList(offerObject.offer.photos));
   return offerNode;
 };
 
