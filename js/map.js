@@ -16,7 +16,7 @@ var OFFER_TYPES = {
 };
 
 var typesMapper = function (key) {
-  if (OFFER_TYPES.hasOwnProperty(key)) {
+  if (key in OFFER_TYPES) {
     return OFFER_TYPES[key];
   } else {
     return key;
@@ -146,33 +146,33 @@ var makePin = function (pinObject) {
 };
 
 var fragment = document.createDocumentFragment();
-for (i = 0; i < PROPERTIES_SIZE; i++) {
-  fragment.appendChild(makePin(properties[i]));
-}
+properties.forEach(function (property) {
+  fragment.appendChild(makePin(property));
+});
 document.querySelector('.map__pins').appendChild(fragment);
 
 var generateFeaturesList = function (data) {
   var featuresFragment = document.createDocumentFragment();
-  for (i = 0; i < data.length; i++) {
+  data.forEach(function (item) {
     var featureItem = document.createElement('li');
     featureItem.classList.add('popup__feature');
-    featureItem.classList.add('popup__feature--' + data[i]);
+    featureItem.classList.add('popup__feature--' + item);
     featuresFragment.appendChild(featureItem);
-  }
+  });
   return featuresFragment;
 };
 
 var generatePhotosList = function (data) {
   var photosFragment = document.createDocumentFragment();
-  for (i = 0; i < data.length; i++) {
+  data.forEach(function (item) {
     var photoItem = document.createElement('img');
     photoItem.classList.add('popup__photo');
-    photoItem.src = data[i];
+    photoItem.src = item;
     photoItem.alt = 'Фотография жилья';
     photoItem.style.width = '45px';
     photoItem.style.height = '40px';
     photosFragment.appendChild(photoItem);
-  }
+  });
   return photosFragment;
 };
 
