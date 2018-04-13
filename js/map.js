@@ -192,7 +192,7 @@ var makeOffer = function (offerObject) {
 };
 
 
-var adform = document.querySelector('.ad-form');
+var adForm = document.querySelector('.ad-form');
 var mainPin = document.querySelector('.map__pin--main');
 var MAIN_PIN_WIDTH = mainPin.querySelector('img').width;
 var MAIN_PIN_HEIGHT = mainPin.querySelector('img').height;
@@ -200,12 +200,12 @@ var MAIN_PIN_HEIGHT = mainPin.querySelector('img').height;
 var setDefaultAddressValue = function () {
   var mainPinX = parseInt(mainPin.style.left, 10) - MAIN_PIN_WIDTH / 2;
   var mainPinY = parseInt(mainPin.style.top, 10) + MAIN_PIN_HEIGHT / 2;
-  adform.querySelector('#address').value = mainPinX + ',' + mainPinY;
+  adForm.querySelector('#address').value = mainPinX + ',' + mainPinY;
 };
 
 var setActiveState = function () {
   map.classList.remove('map--faded');
-  adform.classList.remove('ad-form--disabled');
+  adForm.classList.remove('ad-form--disabled');
   document.querySelector('.map__pins').appendChild(fragment);
   setDefaultAddressValue();
 };
@@ -214,16 +214,21 @@ mainPin.addEventListener('mouseup', function () {
   setActiveState();
 });
 
-document.addEventListener('mouseup', function (evt) {
+var MapPinMouseUpHandler = function (evt) {
   var clickedElement = evt.srcElement;
+
   if (clickedElement.classList[0] === 'map__pin') {
     var oldPopup = document.querySelector('.map__pins .map__card.popup');
     if (oldPopup) {
       oldPopup.remove();
     }
+
     document.querySelector('.map__pins').appendChild(makeOffer(properties[clickedElement.dataset.id]));
+
     document.querySelector('.popup__close').addEventListener('click', function () {
       document.querySelector('.map__pins .map__card.popup').remove();
     });
   }
-});
+};
+
+document.addEventListener('mouseup', MapPinMouseUpHandler);
