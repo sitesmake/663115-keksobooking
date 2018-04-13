@@ -223,7 +223,7 @@ var removeOldPopup = function () {
 
 var MapPinMouseUpHandler = function (evt) {
   var clickedElement = evt.srcElement;
-  if (clickedElement.classList[0] === 'map__pin') {
+  if (clickedElement.className === 'map__pin') {
     removeOldPopup();
     document.querySelector('.map__pins').appendChild(makeOffer(properties[clickedElement.dataset.id]));
     document.querySelector('.popup__close').addEventListener('click', function () {
