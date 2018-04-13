@@ -214,17 +214,18 @@ mainPin.addEventListener('mouseup', function () {
   setActiveState();
 });
 
+var removeOldPopup = function () {
+  var oldPopup = document.querySelector('.map__pins .map__card.popup');
+  if (oldPopup) {
+    oldPopup.remove();
+  }
+};
+
 var MapPinMouseUpHandler = function (evt) {
   var clickedElement = evt.srcElement;
-
   if (clickedElement.classList[0] === 'map__pin') {
-    var oldPopup = document.querySelector('.map__pins .map__card.popup');
-    if (oldPopup) {
-      oldPopup.remove();
-    }
-
+    removeOldPopup();
     document.querySelector('.map__pins').appendChild(makeOffer(properties[clickedElement.dataset.id]));
-
     document.querySelector('.popup__close').addEventListener('click', function () {
       document.querySelector('.map__pins .map__card.popup').remove();
     });
