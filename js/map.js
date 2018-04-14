@@ -145,9 +145,9 @@ var makePin = function (pinObject, id) {
 };
 
 var fragment = document.createDocumentFragment();
-for (i = 0; i < PROPERTIES_SIZE; i++) {
-  fragment.appendChild(makePin(properties[i], i));
-}
+properties.forEach(function (property, index) {
+  fragment.appendChild(makePin(property, index));
+});
 
 var generateFeaturesList = function (data) {
   var featuresFragment = document.createDocumentFragment();
@@ -223,9 +223,10 @@ var removeOldPopup = function () {
 
 var MapPinMouseUpHandler = function (evt) {
   var clickedElement = evt.srcElement;
-  if (clickedElement.className === 'map__pin') {
+  if (clickedElement.classList.contains('map__pin') || clickedElement.parentNode.classList.contains('map__pin')) {
     removeOldPopup();
-    document.querySelector('.map__pins').appendChild(makeOffer(properties[clickedElement.dataset.id]));
+    var offerId = clickedElement.dataset.id || clickedElement.parentNode.dataset.id;
+    document.querySelector('.map__pins').appendChild(makeOffer(properties[offerId]));
     document.querySelector('.popup__close').addEventListener('click', function () {
       document.querySelector('.map__pins .map__card.popup').remove();
     });
