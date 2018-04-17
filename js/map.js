@@ -222,10 +222,10 @@ var removeOldPopup = function () {
 };
 
 var MapPinMouseUpHandler = function (evt) {
-  var clickedElement = evt.srcElement;
-  if (clickedElement.classList.contains('map__pin') || clickedElement.parentNode.classList.contains('map__pin')) {
+  var clickedElement = evt.target.closest('.map__pin');
+  if (clickedElement) {
     removeOldPopup();
-    var offerId = clickedElement.dataset.id || clickedElement.parentNode.dataset.id;
+    var offerId = clickedElement.dataset.id;
     document.querySelector('.map__pins').appendChild(makeOffer(properties[offerId]));
     document.querySelector('.popup__close').addEventListener('click', function () {
       document.querySelector('.map__pins .map__card.popup').remove();
