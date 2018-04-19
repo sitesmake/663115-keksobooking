@@ -141,13 +141,17 @@ var makePin = function (pinObject, id) {
   img.src = pinObject.author.avatar;
   img.alt = pinObject.offer.title;
   pinNode.dataset.id = id;
+  pinNode.classList.add('offer');
   return pinNode;
 };
 
-var fragment = document.createDocumentFragment();
-properties.forEach(function (property, index) {
-  fragment.appendChild(makePin(property, index));
-});
+var generateFragment = function () {
+  var fragment = document.createDocumentFragment();
+  properties.forEach(function (property, index) {
+    fragment.appendChild(makePin(property, index));
+  });
+  return fragment;
+};
 
 var generateFeaturesList = function (data) {
   var featuresFragment = document.createDocumentFragment();
@@ -196,6 +200,8 @@ var adForm = document.querySelector('.ad-form');
 var mainPin = document.querySelector('.map__pin--main');
 var MAIN_PIN_WIDTH = mainPin.querySelector('img').width;
 var MAIN_PIN_HEIGHT = mainPin.querySelector('img').height;
+var MAIN_PIN_INITIAL_LEFT = mainPin.style.left;
+var MAIN_PIN_INITIAL_TOP = mainPin.style.top;
 
 var setDefaultAddressValue = function () {
   var mainPinX = parseInt(mainPin.style.left, 10) - MAIN_PIN_WIDTH / 2;
@@ -206,13 +212,32 @@ var setDefaultAddressValue = function () {
 var setActiveState = function () {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
-  document.querySelector('.map__pins').appendChild(fragment);
+  document.querySelector('.map__pins').appendChild(generateFragment());
+  setDefaultAddressValue();
+};
+
+var setDisabledState = function () {
+  removeOldPopup();
+
+  var elements = document.querySelectorAll('.offer');
+  Array.prototype.forEach.call(elements, function (node) {
+    node.parentNode.removeChild(node);
+  });
+
+  adForm.reset();
+  adForm.classList.add('ad-form--disabled');
+  map.classList.add('map--faded');
+
+  mainPin.style.left = MAIN_PIN_INITIAL_LEFT;
+  mainPin.style.top = MAIN_PIN_INITIAL_TOP;
   setDefaultAddressValue();
 };
 
 mainPin.addEventListener('mouseup', function () {
   setActiveState();
 });
+
+document.querySelector('.ad-form__reset').addEventListener('click', setDisabledState);
 
 var removeOldPopup = function () {
   var oldPopup = document.querySelector('.map__pins .map__card.popup');
@@ -221,15 +246,21 @@ var removeOldPopup = function () {
   }
 };
 
+var showNewPopup = function (offerId) {
+  document.querySelector('.map__pins').appendChild(makeOffer(properties[offerId]));
+  document.querySelector('.popup__close').addEventListener('click', function () {
+    document.querySelector('.map__pins .map__card.popup').remove();
+  });
+};
+
 var MapPinMouseUpHandler = function (evt) {
   var clickedElement = evt.target.closest('.map__pin');
   if (clickedElement) {
     removeOldPopup();
     var offerId = clickedElement.dataset.id;
-    document.querySelector('.map__pins').appendChild(makeOffer(properties[offerId]));
-    document.querySelector('.popup__close').addEventListener('click', function () {
-      document.querySelector('.map__pins .map__card.popup').remove();
-    });
+    if (offerId) {
+      showNewPopup(offerId);
+    }
   }
 };
 
@@ -249,22 +280,22 @@ timeoutField.addEventListener('change', function () {
 
 var typeField = document.getElementById('type');
 var priceField = document.getElementById('price');
-var typeToMinPricePerNightMapper = {
+var typeToPriceMapper = {
   flat: 1000,
   bungalo: 0,
   house: 5000,
   palace: 10000
 };
 
-var updateMinPricePerNight = function () {
+var updatePrice = function () {
   var currentTypeValue = typeField.value;
-  var newMinPrice = typeToMinPricePerNightMapper[currentTypeValue];
-  priceField.min = newMinPrice;
-  priceField.placeholder = newMinPrice;
+  var newPrice = typeToPriceMapper[currentTypeValue];
+  priceField.min = newPrice;
+  priceField.placeholder = newPrice;
 };
-updateMinPricePerNight();
+updatePrice();
 
-typeField.addEventListener('change', updateMinPricePerNight);
+typeField.addEventListener('change', updatePrice);
 
 var roomNumberField = document.getElementById('room_number');
 var capacityField = document.getElementById('capacity');
@@ -297,11 +328,3 @@ checkCapacity();
 
 roomNumberField.addEventListener('change', checkCapacity);
 capacityField.addEventListener('change', checkCapacity);
-
-
-// var startup = function () {
-//   setActiveState();
-//   document.getElementById('title').value = 'Тестовые данные для быстрого старта';
-//   document.getElementById('price').value = '9999';
-// };
-// startup();
