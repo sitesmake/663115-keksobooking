@@ -216,13 +216,14 @@ var setActiveState = function () {
   adForm.classList.remove('ad-form--disabled');
   document.querySelector('.map__pins').appendChild(generateFragment());
   setDefaultAddressValue();
+  mainPin.removeEventListener('mouseup', setActiveState);
 };
 
 var setDisabledState = function () {
   removeOldPopup();
 
   var elements = document.querySelectorAll('.offer');
-  Array.prototype.forEach.call(elements, function (node) {
+  elements.forEach(function (node) {
     node.parentNode.removeChild(node);
   });
 
@@ -233,7 +234,7 @@ var setDisabledState = function () {
   mainPin.style.left = MAIN_PIN_INITIAL_LEFT;
   mainPin.style.top = MAIN_PIN_INITIAL_TOP;
   setDefaultAddressValue();
-  mainPin.removeEventListener('mouseup', setActiveState);
+  mainPin.addEventListener('mouseup', setActiveState);
 };
 
 mainPin.addEventListener('mouseup', setActiveState);
@@ -254,7 +255,7 @@ var showNewPopup = function (offerId) {
   });
 };
 
-var MapPinMouseUpHandler = function (evt) {
+var mapPinMouseUpHandler = function (evt) {
   var clickedElement = evt.target.closest('.map__pin');
   if (clickedElement) {
     removeOldPopup();
@@ -265,7 +266,7 @@ var MapPinMouseUpHandler = function (evt) {
   }
 };
 
-document.addEventListener('mouseup', MapPinMouseUpHandler);
+document.addEventListener('mouseup', mapPinMouseUpHandler);
 
 
 var timeinField = document.getElementById('timein');
