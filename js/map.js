@@ -37,8 +37,8 @@ var randomSortArray = function (ary) {
   });
 };
 
-var checkBoundaries = function (outerElementWidth, outerElementHeight, innerElementWidth, innerElementHeight, leftPosition, topPosition) {
-  return ((leftPosition < 0) || (topPosition < 0) || (leftPosition + innerElementWidth > outerElementWidth) || (topPosition + innerElementHeight > outerElementHeight));
+var isOutOfBox = function (container, element, position) {
+  return ((position.left < 0) || (position.top < 0) || (position.left + element.width > container.width) || (position.top + element.height > container.height));
 };
 
 var mockTitle = function () {
@@ -354,7 +354,7 @@ mainPinElement.addEventListener('mousedown', function (evt) {
 
     var leftCoordinate = mainPinElement.offsetLeft - shift.x;
     var topCoordinate = mainPinElement.offsetTop - shift.y;
-    if (checkBoundaries(mapWidth, mapHeight, mainPinWidth, mainPinHeight, leftCoordinate, topCoordinate)) {
+    if (isOutOfBox({width: mapWidth, height: mapHeight}, {width: mainPinWidth, height: mainPinHeight}, {left: leftCoordinate, top: topCoordinate})) {
       return;
     }
 
