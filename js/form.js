@@ -1,15 +1,15 @@
 'use strict';
 
 (function () {
-  var timeinField = document.getElementById('timein');
-  var timeoutField = document.getElementById('timeout');
+  var timeInField = document.getElementById('timein');
+  var timeOutField = document.getElementById('timeout');
 
-  timeinField.addEventListener('change', function () {
-    timeoutField.value = timeinField.value;
+  timeInField.addEventListener('change', function () {
+    timeOutField.value = timeInField.value;
   });
 
-  timeoutField.addEventListener('change', function () {
-    timeinField.value = timeoutField.value;
+  timeOutField.addEventListener('change', function () {
+    timeInField.value = timeOutField.value;
   });
 
   var typeField = document.getElementById('type');
