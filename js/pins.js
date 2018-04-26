@@ -182,4 +182,14 @@
     document.addEventListener('mousemove', mouseMoveHandler);
     document.addEventListener('mouseup', mouseUpHandler);
   });
+
+
+  adFormElement.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(adFormElement), function () {
+      adFormElement.reset();
+    }, function (errorMessage) {
+      window.utils.showError(errorMessage);
+    });
+    evt.preventDefault();
+  });
 })();

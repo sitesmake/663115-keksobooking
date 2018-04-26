@@ -15,6 +15,14 @@
     },
     isOutOfBox: function (container, element, position) {
       return ((position.left < 0) || (position.top < 0) || (position.left + element.width > container.width) || (position.top + element.height > container.height));
+    },
+    showError: function (message) {
+      var errorNode = document.createTextNode(message);
+      document.body.prepend(errorNode);
+      window.scrollTo(0, 0);
+      setTimeout(function () {
+        errorNode.remove();
+      }, 2000);
     }
   };
 })();
