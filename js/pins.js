@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var SHOW_PROPERTIES_NUMBER = 5;
   var mapElement = document.querySelector('.map');
   var template = document.querySelector('template');
   var pinTemplate = template.content.querySelector('.map__pin');
@@ -14,22 +15,22 @@
   var mainPinInitialLeft = mainPinElement.style.left;
   var mainPinInitialTop = mainPinElement.style.top;
 
-  var makePin = function (pinObject, id) {
+  var makePin = function (pinObject) {
     var pinNode = pinTemplate.cloneNode(true);
     var img = pinNode.querySelector('img');
     pinNode.style.left = pinObject.location.x - img.width / 2 + 'px';
     pinNode.style.top = pinObject.location.y - img.height + 'px';
     img.src = pinObject.author.avatar;
     img.alt = pinObject.offer.title;
-    pinNode.dataset.id = id;
+    pinNode.dataset.id = pinObject.id;
     pinNode.classList.add('offer');
     return pinNode;
   };
 
-  var generateFragment = function () {
+  var generateFragment = function (properties) {
     var fragment = document.createDocumentFragment();
-    window.data.properties.forEach(function (property, index) {
-      fragment.appendChild(makePin(property, index));
+    properties.forEach(function (property) {
+      fragment.appendChild(makePin(property));
     });
     return fragment;
   };
@@ -76,27 +77,37 @@
     return offerNode;
   };
 
+  var removeOffers = function () {
+    var elements = document.querySelectorAll('.offer');
+    elements.forEach(function (node) {
+      node.parentNode.removeChild(node);
+    });
+  };
+
   var setDefaultAddressValue = function () {
     var mainPinElementX = parseInt(mainPinElement.style.left, 10) + mainPinWidth / 2;
     var mainPinElementY = parseInt(mainPinElement.style.top, 10) + mainPinHeight;
     adFormElement.querySelector('#address').value = parseInt(mainPinElementX, 10) + ',' + parseInt(mainPinElementY, 10);
   };
 
+  window.pins = {
+    generateOffers: function (properties) {
+      removeOffers();
+      document.querySelector('.map__pins').appendChild(generateFragment(properties.slice(0, SHOW_PROPERTIES_NUMBER)));
+    }
+  };
+
   var setActiveState = function () {
     mapElement.classList.remove('map--faded');
     adFormElement.classList.remove('ad-form--disabled');
-    document.querySelector('.map__pins').appendChild(generateFragment());
+    window.pins.generateOffers(window.data.properties);
     setDefaultAddressValue();
     mainPinElement.removeEventListener('mouseup', setActiveState);
   };
 
   var setDisabledState = function () {
     removeOldPopup();
-
-    var elements = document.querySelectorAll('.offer');
-    elements.forEach(function (node) {
-      node.parentNode.removeChild(node);
-    });
+    removeOffers();
 
     adFormElement.reset();
     adFormElement.classList.add('ad-form--disabled');
