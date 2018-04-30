@@ -15,7 +15,7 @@
     if (housingPrice !== 'any') {
       if (housingPrice === 'low' && property.offer.price > 10000) {
         return false;
-      } else if (!(housingPrice === 'middle' && property.offer.price > 10000 && property.offer.price < 50000)) {
+      } else if (housingPrice === 'middle' && (property.offer.price <= 10000 || property.offer.price >= 50000)) {
         return false;
       } else if (housingPrice === 'high' && property.offer.price < 50000) {
         return false;
@@ -55,7 +55,7 @@
     });
 
     window.pins.generateOffers(properties);
-    window.pins.showNewPopup(properties[0].id);
+    window.pins.removeOldPopup();
   };
 
   filtersForm.addEventListener('change', function () {

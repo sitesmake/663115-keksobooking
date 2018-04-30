@@ -99,7 +99,7 @@
   };
 
   var setDisabledState = function () {
-    removeOldPopup();
+    window.pins.removeOldPopup();
     removeOffers();
 
     adFormElement.reset();
@@ -116,11 +116,12 @@
 
   document.querySelector('.ad-form__reset').addEventListener('click', setDisabledState);
 
-  var removeOldPopup = function () {
-    var oldPopupElement = document.querySelector('.map__pins .map__card.popup');
-    if (oldPopupElement) {
-      oldPopupElement.remove();
-    }
+  var showNewPopup = function (offerId) {
+    window.pins.removeOldPopup();
+    document.querySelector('.map__pins').appendChild(makeOffer(window.data.properties[offerId]));
+    document.querySelector('.popup__close').addEventListener('click', function () {
+      document.querySelector('.map__pins .map__card.popup').remove();
+    });
   };
 
   var mapPinMouseUpHandler = function (evt) {
@@ -128,7 +129,7 @@
     if (clickedElement) {
       var offerId = clickedElement.dataset.id;
       if (offerId) {
-        window.pins.showNewPopup(offerId);
+        showNewPopup(offerId);
       }
     }
   };
@@ -196,12 +197,11 @@
       document.querySelector('.map__pins').appendChild(generateFragment(properties.slice(0, SHOW_PROPERTIES_NUMBER)));
     },
 
-    showNewPopup: function (offerId) {
-      removeOldPopup();
-      document.querySelector('.map__pins').appendChild(makeOffer(window.data.properties[offerId]));
-      document.querySelector('.popup__close').addEventListener('click', function () {
-        document.querySelector('.map__pins .map__card.popup').remove();
-      });
+    removeOldPopup: function () {
+      var oldPopupElement = document.querySelector('.map__pins .map__card.popup');
+      if (oldPopupElement) {
+        oldPopupElement.remove();
+      }
     }
   };
 })();
