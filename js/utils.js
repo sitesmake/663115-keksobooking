@@ -37,6 +37,32 @@
         window.clearTimeout(lastTimeout);
       }
       lastTimeout = window.setTimeout(f, DEBOUNCE_INTERVAL);
+    },
+
+    request: function (params) {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+
+      xhr.addEventListener('load', function () {
+        if (xhr.status === 200) {
+          params.onSuccess(xhr.response);
+        } else {
+          params.onFailure('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+        }
+      });
+
+      xhr.addEventListener('error', function () {
+        params.onFailure('Произошла ошибка соединения');
+      });
+
+      xhr.addEventListener('timeout', function () {
+        params.onFailure('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+      });
+
+      xhr.timeout = 5000;
+
+      xhr.open(params.method, params.url);
+      xhr.send(params.data);
     }
   };
 })();

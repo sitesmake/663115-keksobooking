@@ -90,13 +90,6 @@
     adFormElement.querySelector('#address').value = parseInt(mainPinElementX, 10) + ',' + parseInt(mainPinElementY, 10);
   };
 
-  window.pins = {
-    generateOffers: function (properties) {
-      removeOffers();
-      document.querySelector('.map__pins').appendChild(generateFragment(properties.slice(0, SHOW_PROPERTIES_NUMBER)));
-    }
-  };
-
   var setActiveState = function () {
     mapElement.classList.remove('map--faded');
     adFormElement.classList.remove('ad-form--disabled');
@@ -130,20 +123,12 @@
     }
   };
 
-  var showNewPopup = function (offerId) {
-    document.querySelector('.map__pins').appendChild(makeOffer(window.data.properties[offerId]));
-    document.querySelector('.popup__close').addEventListener('click', function () {
-      document.querySelector('.map__pins .map__card.popup').remove();
-    });
-  };
-
   var mapPinMouseUpHandler = function (evt) {
     var clickedElement = evt.target.closest('.map__pin');
     if (clickedElement) {
-      removeOldPopup();
       var offerId = clickedElement.dataset.id;
       if (offerId) {
-        showNewPopup(offerId);
+        window.pins.showNewPopup(offerId);
       }
     }
   };
@@ -203,4 +188,20 @@
     });
     evt.preventDefault();
   });
+
+
+  window.pins = {
+    generateOffers: function (properties) {
+      removeOffers();
+      document.querySelector('.map__pins').appendChild(generateFragment(properties.slice(0, SHOW_PROPERTIES_NUMBER)));
+    },
+
+    showNewPopup: function (offerId) {
+      removeOldPopup();
+      document.querySelector('.map__pins').appendChild(makeOffer(window.data.properties[offerId]));
+      document.querySelector('.popup__close').addEventListener('click', function () {
+        document.querySelector('.map__pins .map__card.popup').remove();
+      });
+    }
+  };
 })();
