@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var adFormElement = document.querySelector('.ad-form');
   var timeInField = document.getElementById('timein');
   var timeOutField = document.getElementById('timeout');
 
@@ -62,4 +63,15 @@
 
   roomNumberField.addEventListener('change', checkCapacity);
   capacityField.addEventListener('change', checkCapacity);
+
+  document.querySelector('.ad-form__reset').addEventListener('click', window.map.setDisabledState);
+
+  adFormElement.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(adFormElement), function () {
+      adFormElement.reset();
+    }, function (errorMessage) {
+      window.utils.showError(errorMessage);
+    });
+    evt.preventDefault();
+  });
 })();
