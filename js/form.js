@@ -74,4 +74,13 @@
     });
     evt.preventDefault();
   });
+
+  window.form = {
+    setDefaultAddressValue: function () {
+      var mainPinElement = document.querySelector('.map__pin--main');
+      var mainPinElementX = parseInt(mainPinElement.style.left, 10) + mainPinElement.querySelector('img').width / 2;
+      var mainPinElementY = parseInt(mainPinElement.style.top, 10) + mainPinElement.querySelector('img').height;
+      document.querySelector('#address').value = parseInt(mainPinElementX, 10) + ',' + parseInt(mainPinElementY, 10);
+    }
+  };
 })();

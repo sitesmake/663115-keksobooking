@@ -12,12 +12,12 @@
       mapElement.classList.remove('map--faded');
       adFormElement.classList.remove('ad-form--disabled');
       window.offers.generateOffers(window.data.properties);
-      window.mainPin.setDefaultAddressValue();
+      window.form.setDefaultAddressValue();
       mainPinElement.removeEventListener('mouseup', window.map.setActiveState);
     },
 
     setDisabledState: function () {
-      window.offers.removeOldPopup();
+      window.offers.removePopup();
       window.offers.removeOffers();
 
       adFormElement.reset();
@@ -26,7 +26,7 @@
 
       mainPinElement.style.left = mainPinInitialLeft;
       mainPinElement.style.top = mainPinInitialTop;
-      window.mainPin.setDefaultAddressValue();
+      window.form.setDefaultAddressValue();
       mainPinElement.addEventListener('mouseup', window.map.setActiveState);
     }
   };

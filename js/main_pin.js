@@ -14,7 +14,7 @@
     if (clickedElement) {
       var offerId = clickedElement.dataset.id;
       if (offerId) {
-        window.offers.showNewPopup(offerId);
+        window.offers.showPopup(offerId);
       }
     }
   };
@@ -50,12 +50,12 @@
 
       mainPinElement.style.top = (mainPinElement.offsetTop - shift.y) + 'px';
       mainPinElement.style.left = (mainPinElement.offsetLeft - shift.x) + 'px';
-      window.mainPin.setDefaultAddressValue();
+      window.form.setDefaultAddressValue();
     };
 
     var mouseUpHandler = function (moveEvt) {
       moveEvt.preventDefault();
-      window.mainPin.setDefaultAddressValue();
+      window.form.setDefaultAddressValue();
       document.removeEventListener('mousemove', mouseMoveHandler);
       document.removeEventListener('mouseup', mouseUpHandler);
     };
@@ -63,13 +63,4 @@
     document.addEventListener('mousemove', mouseMoveHandler);
     document.addEventListener('mouseup', mouseUpHandler);
   });
-
-
-  window.mainPin = {
-    setDefaultAddressValue: function () {
-      var mainPinElementX = parseInt(mainPinElement.style.left, 10) + mainPinWidth / 2;
-      var mainPinElementY = parseInt(mainPinElement.style.top, 10) + mainPinHeight;
-      document.querySelector('#address').value = parseInt(mainPinElementX, 10) + ',' + parseInt(mainPinElementY, 10);
-    }
-  };
 })();

@@ -81,15 +81,15 @@
       });
     },
 
-    showNewPopup: function (offerId) {
-      window.offers.removeOldPopup();
+    showPopup: function (offerId) {
+      window.offers.removePopup();
       document.querySelector('.map__pins').appendChild(makeOffer(window.data.properties[offerId]));
       document.querySelector('.popup__close').addEventListener('click', function () {
         document.querySelector('.map__pins .map__card.popup').remove();
       });
     },
 
-    removeOldPopup: function () {
+    removePopup: function () {
       var oldPopupElement = document.querySelector('.map__pins .map__card.popup');
       if (oldPopupElement) {
         oldPopupElement.remove();

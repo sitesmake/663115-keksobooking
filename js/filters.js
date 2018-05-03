@@ -55,7 +55,7 @@
     });
 
     window.offers.generateOffers(properties);
-    window.offers.removeOldPopup();
+    window.offers.removePopup();
   };
 
   filtersForm.addEventListener('change', function () {
