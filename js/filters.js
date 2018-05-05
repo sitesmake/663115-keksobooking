@@ -54,8 +54,8 @@
       return validForCurrentFilters(property);
     });
 
-    window.pins.generateOffers(properties);
-    window.pins.removeOldPopup();
+    window.offers.generateOffers(properties);
+    window.offers.removePopup();
   };
 
   filtersForm.addEventListener('change', function () {

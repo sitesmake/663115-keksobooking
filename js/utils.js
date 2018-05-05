@@ -5,6 +5,8 @@
   var lastTimeout;
 
   window.utils = {
+    IMAGE_FILE_TYPES: ['gif', 'jpg', 'jpeg', 'png'],
+
     randomItem: function (items) {
       return items[Math.floor(Math.random() * items.length)];
     },

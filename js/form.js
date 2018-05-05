@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var adFormElement = document.querySelector('.ad-form');
   var timeInField = document.getElementById('timein');
   var timeOutField = document.getElementById('timeout');
 
@@ -62,4 +63,26 @@
 
   roomNumberField.addEventListener('change', checkCapacity);
   capacityField.addEventListener('change', checkCapacity);
+
+  document.querySelector('.ad-form__reset').addEventListener('click', window.map.setDisabledState);
+
+  adFormElement.addEventListener('submit', function (evt) {
+    window.backend.save(
+        new FormData(adFormElement),
+        function () {
+          adFormElement.reset();
+        }, function (errorMessage) {
+          window.utils.showError(errorMessage);
+        });
+    evt.preventDefault();
+  });
+
+  window.form = {
+    setDefaultAddressValue: function () {
+      var mainPinElement = document.querySelector('.map__pin--main');
+      var mainPinElementX = parseInt(mainPinElement.style.left, 10) + mainPinElement.querySelector('img').width / 2;
+      var mainPinElementY = parseInt(mainPinElement.style.top, 10) + mainPinElement.querySelector('img').height;
+      document.querySelector('#address').value = parseInt(mainPinElementX, 10) + ',' + parseInt(mainPinElementY, 10);
+    }
+  };
 })();
