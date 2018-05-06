@@ -1,10 +1,24 @@
 'use strict';
 
 (function () {
+  var ESC_CODE = 27;
+  var ENTER_CODE = 13;
   var SHOW_PROPERTIES_NUMBER = 5;
   var template = document.querySelector('template');
   var pinTemplate = template.content.querySelector('.map__pin');
   var offerTemplate = template.content.querySelector('article');
+
+  var mapPinMouseUpHandler = function (evt) {
+    var clickedElement = evt.target.closest('.map__pin');
+    if (clickedElement) {
+      var offerId = clickedElement.dataset.id;
+      if (offerId) {
+        window.offers.showPopup(offerId);
+      }
+    }
+  };
+
+  document.addEventListener('mouseup', mapPinMouseUpHandler);
 
   var makePin = function (pinObject) {
     var pinNode = pinTemplate.cloneNode(true);
@@ -15,6 +29,11 @@
     img.alt = pinObject.offer.title;
     pinNode.dataset.id = pinObject.id;
     pinNode.classList.add('offer');
+    pinNode.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === ENTER_CODE) {
+        window.offers.showPopup(pinObject.id);
+      }
+    });
     return pinNode;
   };
 
@@ -68,6 +87,11 @@
     return offerNode;
   };
 
+  var popupCloseEscHandler = function (evt) {
+    if (evt.keyCode === ESC_CODE) {
+      window.offers.removePopup();
+    }
+  };
   window.offers = {
     generateOffers: function (properties) {
       window.offers.removeOffers();
@@ -84,8 +108,9 @@
     showPopup: function (offerId) {
       window.offers.removePopup();
       document.querySelector('.map__pins').appendChild(makeOffer(window.data.properties[offerId]));
+      document.addEventListener('keydown', popupCloseEscHandler);
       document.querySelector('.popup__close').addEventListener('click', function () {
-        document.querySelector('.map__pins .map__card.popup').remove();
+        window.offers.removePopup();
       });
     },
 
@@ -93,6 +118,7 @@
       var oldPopupElement = document.querySelector('.map__pins .map__card.popup');
       if (oldPopupElement) {
         oldPopupElement.remove();
+        document.removeEventListener('keydown', popupCloseEscHandler);
       }
     }
   };

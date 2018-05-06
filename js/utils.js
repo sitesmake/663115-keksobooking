@@ -22,7 +22,11 @@
     },
 
     isOutOfBox: function (container, element, position) {
-      return ((position.left < 0) || (position.top < 0) || (position.left + element.width > container.width) || (position.top + element.height > container.height));
+      return (
+        (position.left < 0) || (position.top + element.scrollHeight < 150)
+        || (position.left + element.scrollWidth > container.width)
+        || (position.top + element.scrollHeight > 700)
+      );
     },
 
     showError: function (message) {

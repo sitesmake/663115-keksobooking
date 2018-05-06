@@ -1,9 +1,10 @@
 'use strict';
 
 (function () {
-  var adFormElement = document.querySelector('.ad-form');
+  var adForm = document.querySelector('.ad-form');
   var timeInField = document.getElementById('timein');
   var timeOutField = document.getElementById('timeout');
+  var fieldsets = adForm.querySelectorAll('fieldset');
 
   timeInField.addEventListener('change', function () {
     timeOutField.value = timeInField.value;
@@ -64,25 +65,50 @@
   roomNumberField.addEventListener('change', checkCapacity);
   capacityField.addEventListener('change', checkCapacity);
 
-  document.querySelector('.ad-form__reset').addEventListener('click', window.map.setDisabledState);
-
-  adFormElement.addEventListener('submit', function (evt) {
-    window.backend.save(
-        new FormData(adFormElement),
-        function () {
-          adFormElement.reset();
-        }, function (errorMessage) {
-          window.utils.showError(errorMessage);
-        });
+  document.querySelector('.ad-form__reset').addEventListener('click', function (evt) {
     evt.preventDefault();
+    window.map.setDisabledState();
+  });
+
+  adForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+
+    window.backend.save(
+        new FormData(adForm),
+        function () {
+          window.map.setDisabledState();
+          document.querySelector('.success').classList.remove('hidden');
+        },
+        function (errorMessage) {
+          window.utils.showError(errorMessage);
+        }
+    );
   });
 
   window.form = {
-    setDefaultAddressValue: function () {
-      var mainPinElement = document.querySelector('.map__pin--main');
-      var mainPinElementX = parseInt(mainPinElement.style.left, 10) + mainPinElement.querySelector('img').width / 2;
-      var mainPinElementY = parseInt(mainPinElement.style.top, 10) + mainPinElement.querySelector('img').height;
-      document.querySelector('#address').value = parseInt(mainPinElementX, 10) + ',' + parseInt(mainPinElementY, 10);
+    reset: function () {
+      adForm.reset();
+      window.offers.removeOffers();
+      window.form.setAddress();
+    },
+
+    setAddress: function () {
+      var mainPinCoordinates = window.mainPin.getCoordinates();
+      document.querySelector('#address').value = mainPinCoordinates.x + ', ' + mainPinCoordinates.y;
+    },
+
+    disable: function () {
+      fieldsets.forEach(function (fieldset) {
+        fieldset.setAttribute('disabled', 'disabled');
+      });
+    },
+
+    enable: function () {
+      fieldsets.forEach(function (fieldset) {
+        fieldset.removeAttribute('disabled');
+      });
     }
   };
+
+  window.form.setAddress();
 })();
