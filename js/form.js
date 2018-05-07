@@ -45,9 +45,8 @@
   var generateGuestsMessage = function (guests) {
     if (guests.includes('0')) {
       return 'Не для гостей';
-    } else {
-      return 'Допустимое количество гостей: ' + guests.join(', ');
     }
+    return 'Допустимое количество гостей: ' + guests.join(', ');
   };
 
   var checkCapacity = function () {
