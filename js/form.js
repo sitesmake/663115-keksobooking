@@ -69,6 +69,16 @@
     window.map.setDisabledState();
   });
 
+  adForm.addEventListener('reset', function () {
+    var photos = document.querySelectorAll('.ad-form__photo');
+    photos.forEach(function (photoElement) {
+      photoElement.parentNode.removeChild(photoElement);
+    });
+    var photoMock = document.createElement('div');
+    photoMock.classList.add('ad-form__photo');
+    document.querySelector('.ad-form__photo-container').appendChild(photoMock);
+  });
+
   adForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
 
