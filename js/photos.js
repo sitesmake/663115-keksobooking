@@ -4,10 +4,28 @@
   var sourceElement = document.querySelector('.ad-form__upload input[type=file]');
   var photosContainer = document.querySelector('.ad-form__photo-container');
 
+  function uploadFile(file) {
+    var reader = new FileReader();
 
-  sourceElement.addEventListener('change', function () {
-    var files = sourceElement.files;
+    reader.addEventListener('load', function () {
+      var photoElement = document.querySelector('.ad-form__photo');
+      if (photoElement.style.backgroundImage === '') {
+        photoElement.parentNode.removeChild(photoElement);
+      }
+      var targetElement;
 
+      targetElement = document.createElement('div');
+      targetElement.classList.add('ad-form__photo');
+      photosContainer.appendChild(targetElement);
+
+      targetElement.setAttribute('draggable', true);
+      targetElement.style.backgroundImage = 'url(' + reader.result + ')';
+    });
+
+    reader.readAsDataURL(file);
+  }
+
+  var uploadFiles = function (files) {
     for (var i = 0; i < files.length; i++) {
       var file = files[i];
       var fileName = file.name.toLowerCase();
@@ -17,26 +35,35 @@
       });
 
       if (matches) {
-        var reader = new FileReader();
-
-        reader.addEventListener('load', function () {
-          var photoElement = document.querySelector('.ad-form__photo');
-          var targetElement;
-          if (photoElement.style.backgroundImage === '') {
-            targetElement = photoElement;
-          } else {
-            targetElement = document.createElement('div');
-            targetElement.classList.add('ad-form__photo');
-            photoElement.parentNode.appendChild(targetElement);
-          }
-          targetElement.setAttribute('draggable', true);
-          targetElement.style.backgroundImage = 'url(' + reader.result + ')';
-        });
-
-        reader.readAsDataURL(file);
+        uploadFile(file);
       }
     }
+  };
+
+  sourceElement.addEventListener('change', function (evt) {
+    uploadFiles(sourceElement.files);
+    evt.target.style.border = 'none';
   });
+
+  var onDrop = function (evt) {
+    evt.preventDefault();
+    uploadFiles(evt.dataTransfer.files);
+  };
+
+  var onDragOver = function (evt) {
+    evt.preventDefault();
+    evt.target.style.border = '1px solid #00ff00';
+  };
+
+  var onDragLeave = function (evt) {
+    evt.preventDefault();
+    evt.target.style.border = 'none';
+  };
+
+  photosContainer.addEventListener('dragover', onDragOver);
+  photosContainer.addEventListener('dragleave', onDragLeave);
+  photosContainer.addEventListener('drop', onDrop);
+
 
   var draggableItem;
 
@@ -67,6 +94,4 @@
       evt.target.style.border = 'none';
     }
   });
-
-
 })();
